@@ -24,13 +24,13 @@ internal class NetworkResponseCall<S: Any, E: Any> (
             override fun onResponse(call: Call<S>, response: Response<S>) {
                 val body = response.body()
                 val code = response.code()
-//                val error = response.errorBody()
+                val error = response.errorBody()
                 Log.w("RETROFIT RESPONSE", response.toString())
                 Log.w("RETROFIT BODY", body.toString())
-//                Log.w("MOCK CODE", code.toString())
+                Log.w("RETROFIT ERROR", error.toString())
 //                Log.w("MOCK MESSAGE", response.message().toString())
-//                Log.w("MOCK ISSUCCESFUL", response.isSuccessful.toString())
-
+                Log.w("MOCK ISSUCCESFUL", response.isSuccessful.toString())
+//
 
                 if (response.isSuccessful){
                     when (code) {
@@ -51,14 +51,14 @@ internal class NetworkResponseCall<S: Any, E: Any> (
 
                         else -> callback.onResponse(
                             this@NetworkResponseCall,
-                            Response.success(NetworkResponse.HttpError(code, response.headers().values("message").toString()))
+                            Response.success(NetworkResponse.HttpError(code, response.headers()["message"] ?: response.message() ))
                         )
 
                     }
                 } else {
                     callback.onResponse(
                         this@NetworkResponseCall,
-                        Response.success(NetworkResponse.HttpError(code, response.message()))
+                        Response.success(NetworkResponse.HttpError(code,  response.headers()["message"] ?: response.message()))
                     )
                 }
 

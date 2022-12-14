@@ -5,7 +5,7 @@ import es.icp.base_retrofit.communication.NetworkResponse
 
 typealias GenericResponse<S> = NetworkResponse<S, Error>
 
-fun NetworkResponse<Any, Error>.executeCall(onError : MutableLiveData<String>) : Any? {
+fun NetworkResponse<Any, Error>.executeCall(onError : MutableLiveData<String?>) : Any? {
    return when (val response = this) {
        is NetworkResponse.Success -> response.body
        is NetworkResponse.HttpError ->  {
