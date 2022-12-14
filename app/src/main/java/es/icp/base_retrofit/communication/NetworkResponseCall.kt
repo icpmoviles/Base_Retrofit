@@ -25,9 +25,8 @@ internal class NetworkResponseCall<S: Any, E: Any> (
                 val body = response.body()
                 val code = response.code()
 //                val error = response.errorBody()
-                Log.w("MOCK RESPONSE", response.toString())
-
-                Log.w("MOCK BODY", body.toString())
+                Log.w("RETROFIT RESPONSE", response.toString())
+                Log.w("RETROFIT BODY", body.toString())
 //                Log.w("MOCK CODE", code.toString())
 //                Log.w("MOCK MESSAGE", response.message().toString())
 //                Log.w("MOCK ISSUCCESFUL", response.isSuccessful.toString())
@@ -66,7 +65,7 @@ internal class NetworkResponseCall<S: Any, E: Any> (
             }
 
             override fun onFailure(call: Call<S>, throwable: Throwable) {
-                Log.w("MOCK ONFAILURE", throwable.message.toString())
+                Log.w("RETROFIT ONFAILURE", throwable.message.toString())
                 val networkResponse = when (throwable) {
                     is IOException -> NetworkResponse.NetworkError(throwable, null)
                     else -> NetworkResponse.UnknownError(throwable)
