@@ -50,6 +50,11 @@ internal class NetworkResponseCall<S: Any, E: Any> (
                             )
                         }
 
+                        else -> callback.onResponse(
+                            this@NetworkResponseCall,
+                            Response.success(NetworkResponse.HttpError(code, response.headers().values("message").toString()))
+                        )
+
                     }
                 } else {
                     callback.onResponse(
