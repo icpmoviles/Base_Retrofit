@@ -17,5 +17,9 @@ object HttpCodes {
     const val BAD_GATEWAY = 502
     const val SERVICE_UNAVAILABLE = 503
 
+    const val ERROR_WITH_SOUND = 700
+    const val ERROR_WITH_VIBRATE = 701
+    const val ERROR_WITH_SOUND_VIBRATE = 702
+
 
 }

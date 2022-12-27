@@ -4,6 +4,7 @@ import android.util.Log
 import es.icp.base_retrofit.utils.HttpCodes.ACCEPTED
 import es.icp.base_retrofit.utils.HttpCodes.NOT_CONTENT
 import es.icp.base_retrofit.utils.HttpCodes.OK
+import es.icp.base_retrofit.utils.TAG
 import okhttp3.Request
 import okhttp3.ResponseBody
 import okio.Timeout
@@ -25,12 +26,7 @@ internal class NetworkResponseCall<S: Any, E: Any> (
                 val body = response.body()
                 val code = response.code()
                 val error = response.errorBody()
-                Log.w("RETROFIT RESPONSE", response.toString())
-                Log.w("RETROFIT BODY", body.toString())
-                Log.w("RETROFIT ERROR", error.toString())
-//                Log.w("MOCK MESSAGE", response.message().toString())
-                Log.w("MOCK ISSUCCESFUL", response.isSuccessful.toString())
-//
+                Log.w("$TAG RESPONSE", response.toString())
 
                 if (response.isSuccessful){
                     when (code) {
@@ -45,7 +41,7 @@ internal class NetworkResponseCall<S: Any, E: Any> (
                         NOT_CONTENT -> {
                             callback.onResponse(
                                 this@NetworkResponseCall,
-                                Response.success(NetworkResponse.UnknownError(Error("El recurso solicitado no ha devuelto contenido")))
+                                Response.success(NetworkResponse.UnknownError(Error("El recurso solicitado no ha devuelto contenido.")))
                             )
                         }
 
@@ -65,7 +61,8 @@ internal class NetworkResponseCall<S: Any, E: Any> (
             }
 
             override fun onFailure(call: Call<S>, throwable: Throwable) {
-                Log.w("RETROFIT ONFAILURE", throwable.message.toString())
+                Log.w("$TAG ONFAILURE", throwable.message.toString())
+                throwable.printStackTrace()
                 val networkResponse = when (throwable) {
                     is IOException -> NetworkResponse.NetworkError(throwable, null)
                     else -> NetworkResponse.UnknownError(throwable)
