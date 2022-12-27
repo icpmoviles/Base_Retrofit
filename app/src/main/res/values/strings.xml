@@ -1,4 +1,3 @@
 <resources>
     <string name="app_name">Base Retrofit</string>
-    <string name="generic_error">Se ha producido un error desconocido. Por favor, vuelva a intentarlo pasados unos minutos.</string>
 </resources>
