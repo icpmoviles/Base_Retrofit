@@ -2,14 +2,16 @@ package es.icp.base_retrofit.utils
 
 import android.util.Log
 import es.icp.base_retrofit.communication.NetworkResponse
+import es.icp.base_retrofit.communication.UiState
 
 const val TAG = "RETROFIT"
 typealias GenericResponse<S> = NetworkResponse<S, Error>
 
-fun NetworkResponse<Any, Error>.executeCall( errorResult: (Int,String) -> Unit?) : Any? {
+fun NetworkResponse<Any, Error>.executeCall(isSuccessfull: (Boolean?) -> Unit , errorResult: (Int,String) -> Unit?) : Any? {
    return when (val response = this) {
        is NetworkResponse.Success -> {
            Log.w("$TAG SUCCES", response.body.toString())
+           isSuccessfull.invoke(true)
            response.body
        }
        is NetworkResponse.HttpError ->  {
