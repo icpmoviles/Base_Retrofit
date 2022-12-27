@@ -1,23 +1,30 @@
 package es.icp.base_retrofit.utils
 
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import es.icp.base_retrofit.communication.NetworkResponse
 
+const val TAG = "RETROFIT"
 typealias GenericResponse<S> = NetworkResponse<S, Error>
 
-fun NetworkResponse<Any, Error>.executeCall(onError : MutableLiveData<String?>) : Any? {
+fun NetworkResponse<Any, Error>.executeCall( errorResult: (Int,String) -> Unit?) : Any? {
    return when (val response = this) {
-       is NetworkResponse.Success -> response.body
+       is NetworkResponse.Success -> {
+           Log.w("$TAG SUCCES", response.body.toString())
+           response.body
+       }
        is NetworkResponse.HttpError ->  {
-           onError.postValue("${response.code} ${response.message}")
-            null
+           errorResult.invoke(response.code, response.message)
+           Log.w("$TAG HTTP_ERROR", "${response.code} ${response.message}")
+           null
        }
        is NetworkResponse.NetworkError -> {
-           onError.postValue("${response.code} ${response.error}")
+           errorResult.invoke(response.code ?: -1, response.error.message?: "Se ha producido un error desconocido. Por favor, vuelva a intentarlo pasados unos minutos." )
+           Log.w("$TAG NETWORK_ERROR", "${response.code} ${response.error.message}")
            null
        }
        is NetworkResponse.UnknownError -> {
-           onError.postValue("${response.error}")
+           errorResult.invoke(-1, response.error?.message ?: "Se ha producido un error desconocido. Por favor, vuelva a intentarlo pasados unos minutos.")
+           Log.w("$TAG UNKNOWN_ERROR", response.error?.message ?: "Se ha producido un error desconocido. Por favor, vuelva a intentarlo pasados unos minutos.")
            null
        }
    }
