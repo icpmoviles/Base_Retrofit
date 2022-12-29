@@ -1,6 +1,7 @@
 package es.icp.base_retrofit.communication
 
 
+import es.icp.base_retrofit.models.NetworkResponse
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
