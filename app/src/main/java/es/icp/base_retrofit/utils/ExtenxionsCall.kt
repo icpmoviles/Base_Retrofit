@@ -4,7 +4,6 @@ import android.util.Log
 import es.icp.base_retrofit.communication.BaseApiResponse
 import es.icp.base_retrofit.communication.NetworkResponse
 import es.icp.base_retrofit.communication.UiState
-import kotlinx.coroutines.flow.MutableStateFlow
 
 const val TAG = "RETROFIT"
 typealias GenericResponse<S> = NetworkResponse<S, Error>
