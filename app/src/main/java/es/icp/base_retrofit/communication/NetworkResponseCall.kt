@@ -1,6 +1,7 @@
 package es.icp.base_retrofit.communication
 
 import android.util.Log
+import es.icp.base_retrofit.models.NetworkResponse
 import es.icp.base_retrofit.utils.HttpCodes.ACCEPTED
 import es.icp.base_retrofit.utils.HttpCodes.NOT_CONTENT
 import es.icp.base_retrofit.utils.HttpCodes.OK

@@ -1,4 +1,4 @@
-package es.icp.base_retrofit.communication
+package es.icp.base_retrofit.models
 
 import java.io.IOException
 
