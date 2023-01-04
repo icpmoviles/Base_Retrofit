@@ -1,5 +1,6 @@
 package es.icp.base_retrofit.database
 
+import com.google.gson.JsonObject
 import es.icp.base_retrofit.models.AccionOffline
 import es.icp.base_retrofit.utils.GenericResponse
 import retrofit2.http.Body
@@ -10,7 +11,7 @@ interface OfflineService {
     @POST
     suspend fun sendOfflineAction(
         @Url endpoint: String,
-        @Body accionOffline:AccionOffline
+        @Body accionOffline: JsonObject
     ) : GenericResponse<Any>
 
 }
