@@ -3,9 +3,8 @@ package es.icp.pruebas
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import es.icp.base_retrofit.application.BaseApplication
+import es.icp.base_retrofit.application.OfflineApplication
 import es.icp.base_retrofit.communication.RetrofitBase
-import es.icp.base_retrofit.database.repo.RepoAccion
 import es.icp.base_retrofit.models.ResponseState
 import es.icp.base_retrofit.utils.executeCall
 import es.icp.pruebas.mockdata.MockModel
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
             baseUrl = "https://63b54fad0f49ecf508a0abcb.mockapi.io/mock/"
         )
         val service = retrofit.create<MockService>()
-        val repo = (this.application as BaseApplication).repoAccion
+        val repo = (this.application as OfflineApplication).repoAccion
 
         CoroutineScope(Dispatchers.IO).launch {
             val lista = repo.getAllAcciones()

@@ -6,11 +6,11 @@ import es.icp.base_retrofit.database.repo.RepoAccion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
-class BaseApplication : Application() {
+open class OfflineApplication : Application() {
 
     private val applicationScope = CoroutineScope(SupervisorJob())
-    private val database by lazy { AccionesOfflineDB.getDatabase(this, applicationScope) }
-    val repoAccion by lazy { RepoAccion(database.accionesOfflineDao()) }
+    private val databaseOffline by lazy { AccionesOfflineDB.getDatabase(this, applicationScope) }
+    val repoAccion by lazy { RepoAccion(databaseOffline.accionesOfflineDao()) }
 
 
 }
