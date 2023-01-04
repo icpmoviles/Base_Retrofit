@@ -6,6 +6,6 @@
 
     <application
         android:usesCleartextTraffic="true"
-        android:name=".application.BaseApplication"/>
+        android:name=".application.OfflineApplication"/>
 
 </manifest>

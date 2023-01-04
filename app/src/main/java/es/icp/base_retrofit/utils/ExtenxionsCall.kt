@@ -2,7 +2,8 @@ package es.icp.base_retrofit.utils
 
 import android.content.Context
 import android.util.Log
-import es.icp.base_retrofit.application.BaseApplication
+import es.icp.base_retrofit.application.OfflineApplication
+import es.icp.base_retrofit.communication.BaseApiResponse
 import es.icp.base_retrofit.communication.RetrofitBase
 import es.icp.base_retrofit.communication.RetrofitBase.mGson
 import es.icp.base_retrofit.database.OfflineService
@@ -27,7 +28,7 @@ fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOff
    return when (val response = this) {
        is NetworkResponse.Success -> {
            context?.let { mContext ->
-               val lista = (mContext as BaseApplication).repoAccion.getAllAcciones()
+               val lista = (mContext as OfflineApplication).repoAccion.getAllAcciones()
                if (lista.isNotEmpty()) {
                    CoroutineScope(Dispatchers.IO).launch {
                        lista.forEach { accion->
@@ -50,7 +51,7 @@ fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOff
                }
            }
            Log.w("$TAG ${this.javaClass.simpleName}", mGson.toJson(response.body))
-           ResponseState.Ok(response.body)
+           ResponseState.Ok(response.body as? BaseApiResponse<*> ?: response.body)
        }
        is NetworkResponse.HttpError ->  {
            Log.w("$TAG ${this.javaClass.simpleName}", "${response.code} ${response.message}")
@@ -62,7 +63,7 @@ fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOff
        is NetworkResponse.NetworkError -> {
            if (soperteOffline) {
                context?.let {
-                   (it as BaseApplication).repoAccion.insertAccion(response.accionOffline)
+                   (it as OfflineApplication).repoAccion.insertAccion(response.accionOffline)
                }
                return ResponseState.Offline
            }
