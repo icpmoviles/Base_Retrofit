@@ -2,6 +2,7 @@ package es.icp.base_retrofit.utils
 
 import android.content.Context
 import android.util.Log
+import com.google.gson.JsonParser
 import es.icp.base_retrofit.application.OfflineApplication
 import es.icp.base_retrofit.communication.BaseApiResponse
 import es.icp.base_retrofit.communication.RetrofitBase
@@ -28,22 +29,22 @@ fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOff
    return when (val response = this) {
        is NetworkResponse.Success -> {
            context?.let { mContext ->
+
                val lista = (mContext as OfflineApplication).repoAccion.getAllAcciones()
                if (lista.isNotEmpty()) {
                    CoroutineScope(Dispatchers.IO).launch {
                        lista.forEach { accion->
                            if (accion.url.isNotEmpty() && accion.metodo == "POST"){
-                               Log.w("MIRA ", "estas en forech")
                                val retrofit = RetrofitBase.getInstance("${accion.url}/")
                                val service = retrofit.create<OfflineService>()
-                               service.sendOfflineAction(accion.url.split("/").last(), accion).executeCall().let {
+                               val a = service.sendOfflineAction(
+                                   accion.url.split("/").last(),
+                                   JsonParser().parse(accion.json).asJsonObject).executeCall().let {
                                    if (it is ResponseState.Ok) {
                                        mContext.repoAccion.deleteByAccion(accion)
                                        Log.w("ACCION ELIMINADA ", accion.toString())
-
                                    }
                                }
-
                            }
                        }
                    }
