@@ -15,7 +15,7 @@ sealed class NetworkResponse <out T: Any, out U: Any> {
     /**
      * Network error
      */
-    data class NetworkError(val error: IOException, val code: Int?) : NetworkResponse<Nothing, Nothing>()
+    data class NetworkError(val error: IOException, val code: Int?, val accionOffline: AccionOffline) : NetworkResponse<Nothing, Nothing>()
 
     /**
      * Por ejemplo, json parsing error
