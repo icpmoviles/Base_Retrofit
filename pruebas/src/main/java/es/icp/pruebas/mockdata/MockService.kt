@@ -14,4 +14,6 @@ interface MockService {
         @Body mockreques: MockModel
     ) : GenericResponse<MockModel>
 
+
+
 }

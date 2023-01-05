@@ -70,7 +70,8 @@ suspend fun checkAccionesPendientes(context: Context){
                 if (lista.isNotEmpty()) {
                     lista.forEach { accion->
                         if (accion.url.isNotEmpty() && accion.metodo == "POST"){
-                            val retrofit = RetrofitBase.getInstance("${accion.url}/")
+                            val url = accion.url.replace(accion.url.split("/").last(),"", true)
+                            val retrofit = RetrofitBase.getInstance(url)
                             val service = retrofit.create<OfflineService>()
                             service.sendOfflineAction(
                                 endpoint = accion.url.split("/").last(),
@@ -90,9 +91,8 @@ suspend fun checkAccionesPendientes(context: Context){
 }
 
 suspend fun NetworkResponse<Any, Error>.executeCallWithCheck(context: Context, soperteOffline: Boolean= false, guardarAccion: Boolean = false): ResponseState {
-
     return withContext(CoroutineScope(Dispatchers.Default).coroutineContext) {
         checkAccionesPendientes(context)
-        return@withContext executeCall(context, soperteOffline, guardarAccion)
+        executeCall(context, soperteOffline, guardarAccion)
     }
 }
