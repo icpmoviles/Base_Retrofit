@@ -11,7 +11,7 @@ import es.icp.base_retrofit.models.AccionOffline
 interface AccionOfflineDAO {
 
   @Query("SELECT * FROM ACCIONES_OFFLINE")
-  fun getAllAcciones(): MutableList<AccionOffline>
+  fun getAllAcciones(): MutableList<AccionOffline>?
 
   @Query("SELECT * FROM ACCIONES_OFFLINE WHERE id = :id")
   fun getAccionById(id: Int): AccionOffline
