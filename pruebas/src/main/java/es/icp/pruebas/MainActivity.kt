@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 mockreques = MockModel(
                     "5550",
                     Date(),
-                    "kkkkk"
+                    "ddd"
                 )
 //                loginRequest = LoginRequest(
 //                    userName = "e.peña", "a0c0ab5f265cbb3901d642e1766e80623f5c207116670074bd0117da68eedda8",)

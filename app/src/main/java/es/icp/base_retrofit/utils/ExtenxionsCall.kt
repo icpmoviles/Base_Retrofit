@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.JsonParser
 import es.icp.base_retrofit.application.OfflineApplication
-import es.icp.base_retrofit.communication.BaseApiResponse
 import es.icp.base_retrofit.communication.RetrofitBase
 import es.icp.base_retrofit.communication.RetrofitBase.mGson
 import es.icp.base_retrofit.database.OfflineService
@@ -13,6 +12,7 @@ import es.icp.base_retrofit.models.ResponseState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.create
 
 const val TAG = "RETROFIT"
@@ -90,6 +90,9 @@ suspend fun checkAccionesPendientes(context: Context){
 }
 
 suspend fun NetworkResponse<Any, Error>.executeCallWithCheck(context: Context, soperteOffline: Boolean= false, guardarAccion: Boolean = false): ResponseState {
-    checkAccionesPendientes(context)
-    return this.executeCall(context, soperteOffline, guardarAccion)
+
+    return withContext(CoroutineScope(Dispatchers.Default).coroutineContext) {
+        checkAccionesPendientes(context)
+        return@withContext executeCall(context, soperteOffline, guardarAccion)
+    }
 }
