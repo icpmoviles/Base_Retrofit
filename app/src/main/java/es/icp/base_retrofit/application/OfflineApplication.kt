@@ -9,7 +9,7 @@ import kotlinx.coroutines.SupervisorJob
 open class OfflineApplication : Application() {
 
     private val applicationScope = CoroutineScope(SupervisorJob())
-    private val databaseOffline by lazy { AccionesOfflineDB.getDatabase(this, applicationScope) }
+    val databaseOffline by lazy { AccionesOfflineDB.getDatabase(this, applicationScope) }
     val repoAccion by lazy { RepoAccion(databaseOffline.accionesOfflineDao()) }
 
 

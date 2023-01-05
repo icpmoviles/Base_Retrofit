@@ -25,34 +25,14 @@ typealias GenericResponse<S> = NetworkResponse<S, Error>
  * @param soperteOffline activa la persistencia de la acciones, si context es null no persistira los datos, solo
  * devolvera el estado offline
  */
-fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOffline: Boolean = false) : ResponseState {
+suspend fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOffline: Boolean = false, guardarAccion: Boolean = false) : ResponseState {
    return when (val response = this) {
        is NetworkResponse.Success -> {
            context?.let { mContext ->
-
-               val lista = (mContext as OfflineApplication).repoAccion.getAllAcciones()
-               if (lista.isNotEmpty()) {
-                   CoroutineScope(Dispatchers.IO).launch {
-                       lista.forEach { accion->
-                           if (accion.url.isNotEmpty() && accion.metodo == "POST"){
-                               val retrofit = RetrofitBase.getInstance("${accion.url}/")
-                               val service = retrofit.create<OfflineService>()
-                               val a = service.sendOfflineAction(
-                                   accion.url.split("/").last(),
-                                   JsonParser().parse(accion.json).asJsonObject).executeCall().let {
-                                   if (it is ResponseState.Ok) {
-                                       mContext.repoAccion.deleteByAccion(accion)
-                                       Log.w("ACCION ELIMINADA ", accion.toString())
-                                   }
-                               }
-                           }
-                       }
-                   }
-
-               }
+               checkAccionesPendientes(mContext)
            }
            Log.w("$TAG ${this.javaClass.simpleName}", mGson.toJson(response.body))
-           ResponseState.Ok(response.body as? BaseApiResponse<*> ?: response.body)
+           ResponseState.Ok( response.body)
        }
        is NetworkResponse.HttpError ->  {
            Log.w("$TAG ${this.javaClass.simpleName}", "${response.code} ${response.message}")
@@ -64,7 +44,7 @@ fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOff
        is NetworkResponse.NetworkError -> {
            if (soperteOffline) {
                context?.let {
-                   (it as OfflineApplication).repoAccion.insertAccion(response.accionOffline)
+                   if (guardarAccion) (it as OfflineApplication).repoAccion.insertAccion(response.accionOffline)
                }
                return ResponseState.Offline
            }
@@ -81,4 +61,35 @@ fun NetworkResponse<Any, Error>.executeCall(context: Context? = null, soperteOff
            )
        }
    }
+}
+
+suspend fun checkAccionesPendientes(context: Context){
+    CoroutineScope(Dispatchers.IO)
+        .launch {
+            (context as OfflineApplication).repoAccion.getAllAcciones()?.let { lista ->
+                if (lista.isNotEmpty()) {
+                    lista.forEach { accion->
+                        if (accion.url.isNotEmpty() && accion.metodo == "POST"){
+                            val retrofit = RetrofitBase.getInstance("${accion.url}/")
+                            val service = retrofit.create<OfflineService>()
+                            service.sendOfflineAction(
+                                endpoint = accion.url.split("/").last(),
+                                accionOffline = JsonParser().parse(accion.json).asJsonObject
+                            ).executeCall().let {
+                                if (it is ResponseState.Ok) {
+                                    context.repoAccion.deleteByAccion(accion)
+                                    Log.w("ACCION ELIMINADA ", accion.toString())
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .also { job -> job.join() }
+}
+
+suspend fun NetworkResponse<Any, Error>.executeCallWithCheck(context: Context, soperteOffline: Boolean= false, guardarAccion: Boolean = false): ResponseState {
+    checkAccionesPendientes(context)
+    return this.executeCall(context, soperteOffline, guardarAccion)
 }
