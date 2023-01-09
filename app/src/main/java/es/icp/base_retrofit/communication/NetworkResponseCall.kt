@@ -28,6 +28,8 @@ internal class NetworkResponseCall<S: Any, E: Any> (
                 val code = response.code()
                 val error = response.errorBody()
                 Log.w("$TAG CALL", response.toString())
+                Log.w("$TAG CALL", body.toString())
+
                 if (response.isSuccessful){
                     when (code) {
                          in OK..ACCEPTED -> {
