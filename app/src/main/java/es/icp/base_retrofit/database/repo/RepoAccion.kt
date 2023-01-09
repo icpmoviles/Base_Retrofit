@@ -1,6 +1,5 @@
 package es.icp.base_retrofit.database.repo
 
-import es.icp.base_retrofit.database.AccionesOfflineDB
 import es.icp.base_retrofit.database.dao.AccionOfflineDAO
 import es.icp.base_retrofit.models.AccionOffline
 
@@ -8,7 +7,7 @@ class RepoAccion constructor(
     private val accionOfflineDAO: AccionOfflineDAO
 ){
 
-    fun insertAccion(accionOffline: AccionOffline) = accionOfflineDAO.insertAccion(accionOffline)
+    suspend fun insertAccion(accionOffline: AccionOffline) = accionOfflineDAO.insertAccion(accionOffline)
     fun getAllAcciones() = accionOfflineDAO.getAllAcciones()
     fun getAccionById(id: Int) = accionOfflineDAO.getAccionById(id)
     fun deleteByList(list: List<AccionOffline>) = accionOfflineDAO.deleteByList(list)

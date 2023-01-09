@@ -23,7 +23,7 @@ interface AccionOfflineDAO {
   fun deleteByAccion(accionOffline: AccionOffline)
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertAccion(accionOffline: AccionOffline)
+  suspend fun insertAccion(accionOffline: AccionOffline)
 
   @Query("DELETE FROM ACCIONES_OFFLINE")
   fun deleteAll()
