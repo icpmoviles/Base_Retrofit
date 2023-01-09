@@ -63,27 +63,23 @@ suspend fun checkAccionesPendientes(context: Context){
 
     (context as OfflineApplication).repoAccion.getAllAcciones()?.let { lista ->
         if (lista.isNotEmpty()) {
-            CoroutineScope(Dispatchers.IO).launch {
-
-                lista.forEach { accion->
-                    delay(1000)
-                    if (accion.url.isNotEmpty() && accion.metodo == "POST"){
-                        val url = accion.url.replace(accion.url.split("/").last(),"", true)
-                        val retrofit = RetrofitBase.getInstance(url)
-                        val service = retrofit.create<OfflineService>()
-                        service.sendOfflineAction(
-                            endpoint = accion.url.split("/").last(),
-                            accionOffline = JsonParser().parse(accion.json).asJsonObject
-                        ).executeCall().let {
-                            if (it is ResponseState.Ok) {
-                                context.repoAccion.deleteByAccion(accion)
-                                Log.w("ACCION ELIMINADA ", accion.toString())
-                            }
+            lista.forEach { accion->
+                delay(1000)
+                if (accion.url.isNotEmpty() && accion.metodo == "POST"){
+                    val url = accion.url.replace(accion.url.split("/").last(),"", true)
+                    val retrofit = RetrofitBase.getInstance(url)
+                    val service = retrofit.create<OfflineService>()
+                    service.sendOfflineAction(
+                        endpoint = accion.url.split("/").last(),
+                        accionOffline = JsonParser().parse(accion.json).asJsonObject
+                    ).executeCall().let {
+                        if (it is ResponseState.Ok) {
+                            context.repoAccion.deleteByAccion(accion)
+                            Log.w("ACCION ELIMINADA ", accion.toString())
                         }
                     }
                 }
-
-            }.also { job -> job.join() }
+            }
         }
     }
 
